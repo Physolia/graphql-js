@@ -64,7 +64,15 @@ export interface ParseOptions {
    * in the source that they correspond to. This configuration flag
    * disables that behavior for performance or testing.
    */
-  noLocation?: boolean;
+  noLocation?: boolean | undefined;
+  /**
+   * Parser CPU and memory usage is linear to the number of tokens in a document
+   * however in extreme cases it becomes quadratic due to memory exhaustion.
+   * Parsing happens before validation so even invalid queries can burn lots of
+   * CPU time and memory.
+   * To prevent this you can set a maximum number of tokens allowed within a document.
+   */
+  maxTokens?: number | undefined;
   /**
    * @deprecated will be removed in the v17.0.0
    *
@@ -80,7 +88,7 @@ export interface ParseOptions {
    * }
    * ```
    */
-  allowLegacyFragmentVariables?: boolean;
+  allowLegacyFragmentVariables?: boolean | undefined;
   /**
    * EXPERIMENTAL:
    *
@@ -102,7 +110,7 @@ export interface ParseOptions {
    * Note: this feature is experimental and may change or be removed in the
    * future.
    */
-  experimentalClientControlledNullability?: boolean;
+  experimentalClientControlledNullability?: boolean | undefined;
 }
 /**
  * Given a GraphQL source, parses it into a Document.
@@ -110,7 +118,7 @@ export interface ParseOptions {
  */
 export declare function parse(
   source: string | Source,
-  options?: ParseOptions,
+  options?: ParseOptions | undefined,
 ): DocumentNode;
 /**
  * Given a string containing a GraphQL value (ex. `[42]`), parse the AST for
@@ -124,7 +132,7 @@ export declare function parse(
  */
 export declare function parseValue(
   source: string | Source,
-  options?: ParseOptions,
+  options?: ParseOptions | undefined,
 ): ValueNode;
 /**
  * Similar to parseValue(), but raises a parse error if it encounters a
@@ -132,7 +140,7 @@ export declare function parseValue(
  */
 export declare function parseConstValue(
   source: string | Source,
-  options?: ParseOptions,
+  options?: ParseOptions | undefined,
 ): ConstValueNode;
 /**
  * Given a string containing a GraphQL Type (ex. `[Int!]`), parse the AST for
@@ -146,7 +154,7 @@ export declare function parseConstValue(
  */
 export declare function parseType(
   source: string | Source,
-  options?: ParseOptions,
+  options?: ParseOptions | undefined,
 ): TypeNode;
 /**
  * This class is exported only to assist people in implementing their own parsers
@@ -160,8 +168,9 @@ export declare function parseType(
  * @internal
  */
 export declare class Parser {
-  protected _options: Maybe<ParseOptions>;
+  protected _options: ParseOptions;
   protected _lexer: Lexer;
+  protected _tokenCounter: number;
   constructor(source: string | Source, options?: ParseOptions);
   /**
    * Converts a name lex token into a name parse node.
@@ -511,7 +520,7 @@ export declare class Parser {
    */
   node<
     T extends {
-      loc?: Location;
+      loc?: Location | undefined;
     },
   >(startToken: Token, node: T): T;
   /**
@@ -575,4 +584,5 @@ export declare class Parser {
    * Advances the parser to the next lex token after last item in the list.
    */
   delimitedMany<T>(delimiterKind: TokenKind, parseFn: () => T): Array<T>;
+  advanceLexer(): void;
 }
