@@ -14,7 +14,7 @@ import {
   defineArguments,
   GraphQLNonNull,
 } from './definition.ts';
-import { GraphQLBoolean, GraphQLString } from './scalars.ts';
+import { GraphQLBoolean, GraphQLInt, GraphQLString } from './scalars.ts';
 /**
  * Test if the given value is a GraphQL directive.
  */
@@ -137,6 +137,54 @@ export const GraphQLSkipDirective: GraphQLDirective = new GraphQLDirective({
   },
 });
 /**
+ * Used to conditionally defer fragments.
+ */
+export const GraphQLDeferDirective = new GraphQLDirective({
+  name: 'defer',
+  description:
+    'Directs the executor to defer this fragment when the `if` argument is true or undefined.',
+  locations: [
+    DirectiveLocation.FRAGMENT_SPREAD,
+    DirectiveLocation.INLINE_FRAGMENT,
+  ],
+  args: {
+    if: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+      description: 'Deferred when true or undefined.',
+      defaultValue: true,
+    },
+    label: {
+      type: GraphQLString,
+      description: 'Unique name',
+    },
+  },
+});
+/**
+ * Used to conditionally stream list fields.
+ */
+export const GraphQLStreamDirective = new GraphQLDirective({
+  name: 'stream',
+  description:
+    'Directs the executor to stream plural fields when the `if` argument is true or undefined.',
+  locations: [DirectiveLocation.FIELD],
+  args: {
+    if: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+      description: 'Stream when true or undefined.',
+      defaultValue: true,
+    },
+    label: {
+      type: GraphQLString,
+      description: 'Unique name',
+    },
+    initialCount: {
+      defaultValue: 0,
+      type: GraphQLInt,
+      description: 'Number of items to return immediately',
+    },
+  },
+});
+/**
  * Constant string used for default reason for a deprecation.
  */
 export const DEFAULT_DEPRECATION_REASON = 'No longer supported';
@@ -178,6 +226,16 @@ export const GraphQLSpecifiedByDirective: GraphQLDirective =
     },
   });
 /**
+ * Used to indicate an Input Object is a OneOf Input Object.
+ */
+export const GraphQLOneOfDirective: GraphQLDirective = new GraphQLDirective({
+  name: 'oneOf',
+  description:
+    'Indicates exactly one field must be supplied and this field must not be `null`.',
+  locations: [DirectiveLocation.INPUT_OBJECT],
+  args: {},
+});
+/**
  * The full list of specified directives.
  */
 export const specifiedDirectives: ReadonlyArray<GraphQLDirective> =
@@ -186,6 +244,7 @@ export const specifiedDirectives: ReadonlyArray<GraphQLDirective> =
     GraphQLSkipDirective,
     GraphQLDeprecatedDirective,
     GraphQLSpecifiedByDirective,
+    GraphQLOneOfDirective,
   ]);
 export function isSpecifiedDirective(directive: GraphQLDirective): boolean {
   return specifiedDirectives.some(({ name }) => name === directive.name);
