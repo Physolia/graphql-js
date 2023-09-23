@@ -25,9 +25,9 @@
  *
  * @packageDocumentation
  */
-export { version, versionInfo } from './version';
-export type { GraphQLArgs } from './graphql';
-export { graphql, graphqlSync } from './graphql';
+export { version, versionInfo } from './version.js';
+export type { GraphQLArgs } from './graphql.js';
+export { graphql, graphqlSync } from './graphql.js';
 export {
   resolveObjMapThunk,
   resolveReadonlyArrayThunk,
@@ -52,8 +52,11 @@ export {
   specifiedDirectives,
   GraphQLIncludeDirective,
   GraphQLSkipDirective,
+  GraphQLDeferDirective,
+  GraphQLStreamDirective,
   GraphQLDeprecatedDirective,
   GraphQLSpecifiedByDirective,
+  GraphQLOneOfDirective,
   TypeKind,
   DEFAULT_DEPRECATION_REASON,
   introspectionTypes,
@@ -117,7 +120,7 @@ export {
   assertValidSchema,
   assertName,
   assertEnumValueName,
-} from './type/index';
+} from './type/index.js';
 export type {
   GraphQLType,
   GraphQLInputType,
@@ -176,7 +179,7 @@ export type {
   GraphQLScalarSerializer,
   GraphQLScalarValueParser,
   GraphQLScalarLiteralParser,
-} from './type/index';
+} from './type/index.js';
 export {
   Token,
   Source,
@@ -209,7 +212,7 @@ export {
   isTypeDefinitionNode,
   isTypeSystemExtensionNode,
   isTypeExtensionNode,
-} from './language/index';
+} from './language/index.js';
 export type {
   ParseOptions,
   SourceLocation,
@@ -280,9 +283,10 @@ export type {
   UnionTypeExtensionNode,
   EnumTypeExtensionNode,
   InputObjectTypeExtensionNode,
-} from './language/index';
+} from './language/index.js';
 export {
   execute,
+  experimentalExecuteIncrementally,
   executeSync,
   defaultFieldResolver,
   defaultTypeResolver,
@@ -292,12 +296,23 @@ export {
   getDirectiveValues,
   subscribe,
   createSourceEventStream,
-} from './execution/index';
+} from './execution/index.js';
 export type {
   ExecutionArgs,
   ExecutionResult,
+  ExperimentalIncrementalExecutionResults,
+  InitialIncrementalExecutionResult,
+  SubsequentIncrementalExecutionResult,
+  IncrementalDeferResult,
+  IncrementalStreamResult,
+  IncrementalResult,
   FormattedExecutionResult,
-} from './execution/index';
+  FormattedInitialIncrementalExecutionResult,
+  FormattedSubsequentIncrementalExecutionResult,
+  FormattedIncrementalDeferResult,
+  FormattedIncrementalStreamResult,
+  FormattedIncrementalResult,
+} from './execution/index.js';
 export {
   validate,
   ValidationContext,
@@ -338,14 +353,14 @@ export {
   PossibleTypeExtensionsRule,
   NoDeprecatedCustomRule,
   NoSchemaIntrospectionCustomRule,
-} from './validation/index';
-export type { ValidationRule } from './validation/index';
-export { GraphQLError, syntaxError, locatedError } from './error/index';
+} from './validation/index.js';
+export type { ValidationRule } from './validation/index.js';
+export { GraphQLError, syntaxError, locatedError } from './error/index.js';
 export type {
   GraphQLErrorOptions,
   GraphQLFormattedError,
   GraphQLErrorExtensions,
-} from './error/index';
+} from './error/index.js';
 export {
   getIntrospectionQuery,
   getOperationAST,
@@ -357,6 +372,7 @@ export {
   lexicographicSortSchema,
   printSchema,
   printType,
+  printDirective,
   printIntrospectionSchema,
   typeFromAST,
   valueFromAST,
@@ -375,7 +391,7 @@ export {
   DangerousChangeType,
   findBreakingChanges,
   findDangerousChanges,
-} from './utilities/index';
+} from './utilities/index.js';
 export type {
   IntrospectionOptions,
   IntrospectionQuery,
@@ -403,4 +419,4 @@ export type {
   BreakingChange,
   DangerousChange,
   TypedQueryDocumentNode,
-} from './utilities/index';
+} from './utilities/index.js';
